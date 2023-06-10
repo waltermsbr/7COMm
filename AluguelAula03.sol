@@ -4,7 +4,6 @@ pragma solidity 0.8.20;
 contract AluguelAula03 {
     string private nomeLocador;
     string private nomeLocatario;
-    uint16 private valorAluguel;
     uint16[36] private listaAluguel;
 
     constructor(
@@ -14,9 +13,8 @@ contract AluguelAula03 {
     ) {
         nomeLocador = _nomeLocador;
         nomeLocatario = _nomeLocatario;
-        valorAluguel = _valorAluguel;
         for (uint8 x = 0; x < 36; x++) {
-            listaAluguel[x] = valorAluguel;
+            listaAluguel[x] = _valorAluguel;
         }
     }
 
@@ -66,6 +64,5 @@ contract AluguelAula03 {
         return qtdeRegistrosAlterados;
     }
 }
-
 
 // 0xeb11dC4d1CDfC79FE56A52B0554630D0218d5911
