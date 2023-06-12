@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 contract AluguelAula03 {
-    Aluguel private aluguel;
+    Aluguel public aluguel;
 
     constructor(
         string memory _nomeLocador,
@@ -77,7 +77,7 @@ contract AluguelAula03 {
         require(_valorReajuste > 0, "Valor de reajuste maior que 0");
         for (
             uint8 x = _mesInicialReajuste - 1;
-            x <= aluguel.listaAluguel.length;
+            x < aluguel.listaAluguel.length;
             x++
         ) {
             aluguel.listaAluguel[x] += _valorReajuste;
@@ -85,6 +85,10 @@ contract AluguelAula03 {
         }
         return qtdeRegistrosAlterados;
     }
+
+    function listarMesesAluguel() external view returns (uint16[36] memory) {
+        return aluguel.listaAluguel;
+    }
 }
 
-// 0xDe51062711dcf5B2e236E76047f84Fd184b5895e
+// 0xcfaf827E5650800deb465Ad9fd584e7feB4743b1
