@@ -1,7 +1,34 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-contract AluguelAula03 {
+contract Ownable {
+    address public owner;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can perform this action.");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function changeOwner(address _owner) public onlyOwner returns (bool) {
+        owner = _owner;
+        return true;
+    }
+}
+
+contract Identificador is Ownable {
+    function criarIdentificador(
+        string memory _nomeLocador,
+        string memory _nomeLocatario
+    ) public view onlyOwner returns (bytes32) {
+        return keccak256(bytes(string.concat(_nomeLocador, _nomeLocatario)));
+    }
+}
+
+contract AluguelAula03 is Ownable, Identificador {
     Aluguel public aluguel;
 
     constructor(
@@ -9,14 +36,22 @@ contract AluguelAula03 {
         string memory _nomeLocatario,
         uint16 _valorAluguel
     ) {
+        aluguel.endereco = msg.sender;
+        aluguel.identificador = criarIdentificador(
+            _nomeLocador,
+            _nomeLocatario
+        );
         aluguel.nomeLocador = _nomeLocador;
         aluguel.nomeLocatario = _nomeLocatario;
         for (uint8 x = 0; x < 36; x++) {
             aluguel.listaAluguel[x] = _valorAluguel;
         }
+        aluguel.status = true;
     }
 
     struct Aluguel {
+        address endereco;
+        bytes32 identificador;
         string nomeLocador;
         string nomeLocatario;
         uint16[36] listaAluguel;
@@ -40,13 +75,15 @@ contract AluguelAula03 {
         return aluguel.listaAluguel[_mesAluguel - 1];
     }
 
-    function recuperarNomeLocadorNomeLocatario()
+    function recuperarNomeLocadorNomeLocatario(bytes32 _identificador)
         external
         view
         returns (string memory _nomeLocador, string memory _nomeLocatario)
     {
-        _nomeLocador = aluguel.nomeLocador;
-        _nomeLocatario = aluguel.nomeLocatario;
+        if (aluguel.identificador == _identificador) {
+            _nomeLocador = aluguel.nomeLocador;
+            _nomeLocatario = aluguel.nomeLocatario;
+        }
         return (_nomeLocador, _nomeLocatario);
     }
 
@@ -91,4 +128,4 @@ contract AluguelAula03 {
     }
 }
 
-// 0xcfaf827E5650800deb465Ad9fd584e7feB4743b1
+// 0x5BD84bcea822f253954F01b68CCECE05861b1f5b
